@@ -34,21 +34,40 @@
 			display: flex;
 			padding: 10px;
 		}
+		#identifybox{
+			display: flex;
+			z-index: 1;
+			background: lightslategray;
+			padding: 10px;
+			right: 10px;
+			bottom: 10px;
+			position: absolute;
+			width: 20vw;
+			color: white;			
+		}		
+		#main{
+			display: flex;
+			min-height: 100vh;
+			flex-direction: column;
+		}
 	</style>
 
-	<div>
-		<div id="menu">
-		<button id="ActionComplete" class="btn btn-primary tsp" onClick="togglelayer(this)">Action Complete</button>
-		<button id="NoSamplingRequired" class="btn btn-primary tsp" onClick="togglelayer(this)">No Sampling Required</button>
-		<button id="QualifiesforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Qualifies For ECY</button>
-		<button id="DoesntQualifyforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Doesn't Qualify for ECY</button>
-		</div>
+	<div id="main">
+		<header>
+			<div id="menu">
+				<button id="ActionComplete" class="btn btn-primary tsp" onClick="togglelayer(this)">Action Complete</button>
+				<button id="NoSamplingRequired" class="btn btn-primary tsp" onClick="togglelayer(this)">No Sampling Required</button>
+				<button id="QualifiesforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Qualifies For ECY</button>
+				<button id="DoesntQualifyforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Doesn't Qualify for ECY</button>
+			</div>
+		</header>
 		<div id="legend">
 			<div class="leg" style="background: #41b6c4">action complete</div>
 			<div class="leg" style="background: #a1dab4">no sampling required</div>
 			<div class="leg" style="background: #225ea8">qualifies for ecy</div>
 			<div class="leg" style="background: #ffffcc">doesn't qualify for ecy</div>
 		</div>
+		<div id="identifybox"></div>
 		<div id="map" style="width: 100vw; height: 100vh"></div>		
 	</div>		
 	
@@ -90,7 +109,20 @@
 		}
 
 		map.on('click', function(e){
-			console.log(map.queryRenderedFeatures(e.point))
+			var content;
+			var feature = map.queryRenderedFeatures(e.point)
+			if (feature.length > 0){
+				var data = feature[0].properties
+				if(data.hasOwnProperty('EcologyIdentifier')){
+					content = "<ul class=\"list-unstyled\"><li>Ecology ID: " + data.EcologyIdentifier + "</li><li>VisitRequiredFlag: " + data.VisitRequiredFlag + "</li></ul>"
+				}else{
+					content = 'no feature selected'
+				}				
+			}else{
+				content = 'no feature selected'				
+			}
+			document.getElementById('identifybox').innerHTML = content
+			
 		})
 
 	</script>
