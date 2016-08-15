@@ -89,5 +89,9 @@
 			}
 		}
 
+		map.on('click', function(e){
+			console.log(map.queryRenderedFeatures(e.point))
+		})
+
 	</script>
 </body>
