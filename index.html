@@ -90,7 +90,7 @@
 		}
 
 		map.on('click', function(e){
-			console.log(map.queryRenderedFeatures(e.point))
+			console.log(map.queryRenderedFeatures(e.point)[0].properties)
 		})
 
 	</script>
