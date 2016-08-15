@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TSP AREIS Data</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src='https://api.mapbox.com/mapbox-gl-js/v0.22.0/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v0.22.0/mapbox-gl.css' rel='stylesheet' />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</head>
+<body style="margin:auto;">	
+	<style>
+		#menu{
+			display: flex;
+			justify-content: center;
+		}
+
+		.tsp{
+			display: flex;
+			flex-grow: 2;
+			justify-content: center;
+		}
+	</style>
+
+	<div>
+		<div id="menu">
+		<button id="ActionComplete" class="btn btn-primary tsp" onClick="togglelayer(this)">Action Complete</button>
+		<button id="NoSamplingRequired" class="btn btn-primary tsp" onClick="togglelayer(this)">No Sampling Required</button>
+		<button id="QualifiesforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Qualifies For ECY</button>
+		<button id="DoesntQualifyforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Doesn't Qualify for ECY</button>
+		</div>
+		<div id="map" style="width: 100vw; height: 100vh"></div>		
+	</div>		
+	
+	<script>
+		mapboxgl.accessToken = 'pk.eyJ1IjoiZnJveWxhbmQiLCJhIjoiY2lycnlhdjExMGh6eWZmbTZ5NjVydmM4ZCJ9.otAW8RVOFQx7HeDZEyZuLQ'
+
+		var map = new mapboxgl.Map({
+			container: 'map',
+			style: 'mapbox://styles/froyland/cirryojgs0009gznped9g1fhd'
+		})
+		
+		function togglelayer(layer){			
+			switch(layer.id){
+				case 'ActionComplete':
+					togglevis("parcelsactioncomplete-4mpzww")
+					break;
+				case 'NoSamplingRequired':
+					togglevis("parcelsnosamplingdata-dtj665")
+					break;
+				case 'QualifiesforECY':
+					togglevis("parcelsqualifiesforecy-9ijw51")
+					break;
+				case 'DoesntQualifyforECY':
+					togglevis("parcelsdoesnotqualifyforecy-88nyer")
+					break;
+			}						
+		}
+
+		function togglevis(id){
+			var lyr = map.style._layers[id]
+			if(lyr.layout.visibility === 'visible'){
+				map.setLayoutProperty(lyr.id, 'visibility', 'none')
+			}else{
+				map.setLayoutProperty(lyr.id, 'visibility', 'visible')
+			}
+		}
+
+	</script>
+</body>
