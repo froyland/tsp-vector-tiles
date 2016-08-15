@@ -22,6 +22,18 @@
 			flex-grow: 2;
 			justify-content: center;
 		}
+		#legend{
+			position: absolute;
+			display: flex;
+			bottom: 10px;
+			left: 10px;
+			z-index: 1;
+			flex-direction: column;			
+		}
+		.leg{
+			display: flex;
+			padding: 10px;
+		}
 	</style>
 
 	<div>
@@ -30,6 +42,12 @@
 		<button id="NoSamplingRequired" class="btn btn-primary tsp" onClick="togglelayer(this)">No Sampling Required</button>
 		<button id="QualifiesforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Qualifies For ECY</button>
 		<button id="DoesntQualifyforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Doesn't Qualify for ECY</button>
+		</div>
+		<div id="legend">
+			<div class="leg" style="background: #41b6c4">action complete</div>
+			<div class="leg" style="background: #a1dab4">no sampling required</div>
+			<div class="leg" style="background: #225ea8">qualifies for ecy</div>
+			<div class="leg" style="background: #ffffcc">doesn't qualify for ecy</div>
 		</div>
 		<div id="map" style="width: 100vw; height: 100vh"></div>		
 	</div>		
@@ -45,26 +63,29 @@
 		function togglelayer(layer){			
 			switch(layer.id){
 				case 'ActionComplete':
-					togglevis("parcelsactioncomplete-4mpzww")
+					togglevis(layer.id, "parcelsactioncomplete-4mpzww")
 					break;
 				case 'NoSamplingRequired':
-					togglevis("parcelsnosamplingdata-dtj665")
+					togglevis(layer.id, "parcelsnosamplingdata-dtj665")
 					break;
 				case 'QualifiesforECY':
-					togglevis("parcelsqualifiesforecy-9ijw51")
+					togglevis(layer.id, "parcelsqualifiesforecy-9ijw51")
 					break;
 				case 'DoesntQualifyforECY':
-					togglevis("parcelsdoesnotqualifyforecy-88nyer")
+					togglevis(layer.id, "parcelsdoesnotqualifyforecy-88nyer")
 					break;
 			}						
 		}
 
-		function togglevis(id){
-			var lyr = map.style._layers[id]
+		function togglevis(id, lyrname){
+			var lyr = map.style._layers[lyrname]
+			btn = document.getElementById(id)
 			if(lyr.layout.visibility === 'visible'){
 				map.setLayoutProperty(lyr.id, 'visibility', 'none')
+				btn.classList.add('disabled')
 			}else{
 				map.setLayoutProperty(lyr.id, 'visibility', 'visible')
+				btn.classList.remove('disabled')
 			}
 		}
 
