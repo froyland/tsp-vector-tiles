@@ -36,6 +36,7 @@
 		}
 		#identifybox{
 			display: flex;
+			flex-direction: column;
 			z-index: 1;
 			background: lightslategray;
 			padding: 10px;
@@ -55,10 +56,10 @@
 	<div id="main">
 		<header>
 			<div id="menu">
-				<button id="ActionComplete" class="btn btn-primary tsp" onClick="togglelayer(this)">Action Complete</button>
-				<button id="NoSamplingRequired" class="btn btn-primary tsp" onClick="togglelayer(this)">No Sampling Required</button>
-				<button id="QualifiesforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Qualifies For ECY</button>
-				<button id="DoesntQualifyforECY" class="btn btn-primary tsp" onClick="togglelayer(this)">Doesn't Qualify for ECY</button>
+				<button id="ActionComplete" class="btn btn-primary tsp" onClick="togglevis(this)">Action Complete</button>
+				<button id="NoSamplingData" class="btn btn-primary tsp" onClick="togglevis(this)">No Sampling Data</button>
+				<button id="Qualifies" class="btn btn-primary tsp" onClick="togglevis(this)">Qualifies For ECY</button>
+				<button id="DoesNotQualify" class="btn btn-primary tsp" onClick="togglevis(this)">Doesn't Qualify for ECY</button>
 			</div>
 		</header>
 		<div id="legend">
@@ -73,32 +74,16 @@
 	
 	<script>
 		mapboxgl.accessToken = 'pk.eyJ1IjoiZnJveWxhbmQiLCJhIjoiY2lycnlhdjExMGh6eWZmbTZ5NjVydmM4ZCJ9.otAW8RVOFQx7HeDZEyZuLQ'
-
+		
 		var map = new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/froyland/cirryojgs0009gznped9g1fhd'
+			// style: 'mapbox://styles/froyland/cirryojgs0009gznped9g1fhd'
+			style: 'mapbox://styles/froyland/cirzaj9gm0012g7nmdu515jii'
 		})
 		
-		function togglelayer(layer){			
-			switch(layer.id){
-				case 'ActionComplete':
-					togglevis(layer.id, "parcelsactioncomplete-4mpzww")
-					break;
-				case 'NoSamplingRequired':
-					togglevis(layer.id, "parcelsnosamplingdata-dtj665")
-					break;
-				case 'QualifiesforECY':
-					togglevis(layer.id, "parcelsqualifiesforecy-9ijw51")
-					break;
-				case 'DoesntQualifyforECY':
-					togglevis(layer.id, "parcelsdoesnotqualifyforecy-88nyer")
-					break;
-			}						
-		}
-
-		function togglevis(id, lyrname){
-			var lyr = map.style._layers[lyrname]
-			btn = document.getElementById(id)
+		function togglevis(layer){
+			var lyr = map.style._layers[layer.id]
+			var btn = document.getElementById(layer.id)
 			if(lyr.layout.visibility === 'visible'){
 				map.setLayoutProperty(lyr.id, 'visibility', 'none')
 				btn.classList.add('disabled')
@@ -109,21 +94,26 @@
 		}
 
 		map.on('click', function(e){
-			var content;
-			var feature = map.queryRenderedFeatures(e.point)
-			if (feature.length > 0){
-				var data = feature[0].properties
-				if(data.hasOwnProperty('EcologyIdentifier')){
-					content = "<ul class=\"list-unstyled\"><li>Ecology ID: " + data.EcologyIdentifier + "</li><li>VisitRequiredFlag: " + data.VisitRequiredFlag + "</li></ul>"
-				}else{
-					content = 'no feature selected'
-				}				
+			var content = ''
+			var features = map.queryRenderedFeatures(e.point)
+			if (features.length > 0){
+				var data = features[0].properties
+				features.forEach(function(feat){
+					if(feat.properties.hasOwnProperty('EcologyIdentifier')){						
+						content += "<ul class=\"list-unstyled\"><li>Feature " + String(features.indexOf(feat) + 1) + ":</li><li>Status: " + feat.properties.status + "</li><li>Ecology ID: " + feat.properties.EcologyIdentifier + "</li></ul>"
+					}else{
+						content = 'no feature selected'
+					}					
+				})				
 			}else{
 				content = 'no feature selected'				
 			}
-			document.getElementById('identifybox').innerHTML = content
-			
+			document.getElementById('identifybox').innerHTML = content			
 		})
+
+		// map.style.on('load',function(){
+		// 	console.log(map.querySourceFeatures('composite',{sourceLayer: 'all-aliwaj'}))			
+		// })
 
 	</script>
 </body>
